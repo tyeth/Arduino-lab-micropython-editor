@@ -12,10 +12,16 @@ function DiskFileList(state, emit) {
 
   function DiskFileItem(item, i) {
     if (item.type === 'folder') {
+      const isChecked = state.selectedFiles.find(f => f.fileName === item.fileName && f.source === 'disk')
       return html`
-        <div class="item" onclick=${() => emit('navigate-disk-folder', item.fileName)}>
-          <img class="icon" src="media/folder.svg" />
-          <div class="text">${item.fileName}</div>
+        <div class="item">
+        ${Checkbox({
+          checked: isChecked,
+          icon: '',
+          onClick: () => emit('toggle-file-selection', item, 'disk')
+        })}
+          <img class="icon" src="media/folder.svg" onclick=${() => emit('navigate-disk-folder', item.fileName)}/>
+          <div class="text" onclick=${() => emit('navigate-disk-folder', item.fileName)}>${item.fileName}</div>
         </div>
       `
     } else {
@@ -24,10 +30,11 @@ function DiskFileList(state, emit) {
         <div class="item">
           ${Checkbox({
             checked: isChecked,
-            icon: 'file.svg',
+            icon: '',
             onClick: () => emit('toggle-file-selection', item, 'disk')
           })}
-          <div onclick=${() => emit('toggle-file-selection', item, 'disk')} class="text">${item.fileName}</div>
+          <div class='icon'><img src="media/file.svg" /></div>
+          <div class="text">${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
           </div>
@@ -90,10 +97,16 @@ function BoardFileList(state, emit) {
 
   function BoardFileItem(item, i) {
     if (item.type === 'folder') {
+      const isChecked = state.selectedFiles.find(f => f.fileName === item.fileName && f.source === 'board')
       return html`
-        <div class="item" onclick=${() => emit('navigate-board-folder', item.fileName)}>
-          <img class="icon" src="media/folder.svg" />
-          <div class="text">${item.fileName}</div>
+        <div class="item">
+        ${Checkbox({
+          checked: isChecked,
+          icon: '',
+          onClick: () => emit('toggle-file-selection', item, 'board')
+        })}
+          <img class="icon" src="media/folder.svg" onclick=${() => emit('navigate-board-folder', item.fileName)} />
+          <div class="text" onclick=${() => emit('navigate-board-folder', item.fileName)}>${item.fileName}</div>
         </div>
       `
     } else {
@@ -102,10 +115,11 @@ function BoardFileList(state, emit) {
         <div class="item">
           ${Checkbox({
             checked: isChecked,
-            icon: 'file.svg',
+            icon: '',
             onClick: () => emit('toggle-file-selection', item, 'board')
           })}
-          <div onclick=${() => emit('toggle-file-selection', item, 'board')} class="text">${item.fileName}</div>
+          <div class='icon'><img src="media/file.svg" /></div>
+          <div class="text">${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
           </div>

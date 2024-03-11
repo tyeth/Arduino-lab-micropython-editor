@@ -620,7 +620,7 @@ async function store(state, emitter) {
     }
 
     state.isTransferring = false
-    state.selectedFiles = []
+    state.selectedFSitems = []
     emitter.emit('refresh-files')
     emitter.emit('render')
   })

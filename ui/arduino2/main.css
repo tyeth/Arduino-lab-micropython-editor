@@ -371,7 +371,7 @@ button.small .icon {
   padding: 12px 32px 24px 32px;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  
   flex: 1 0 0;
   align-self: stretch;
 }
@@ -423,6 +423,7 @@ button.small .icon {
 .device-header .icon {
   width: 22px;
   height: 22px;
+  margin-right: 11px;
 }
 
 .device-header .text {
@@ -485,9 +486,7 @@ button.small .icon {
   height: 32px;
   padding: 5px 10px;
   align-items: center;
-  gap: 10px;
   align-self: stretch;
-  cursor: pointer;
 }
 
 .file-list .item:hover {
@@ -505,7 +504,11 @@ button.small .icon {
   display: flex;
 }
 
-.file-list .item .checkbox,
+.file-list .item .checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
 .file-list .item .icon {
   width: 32px;
   height: 32px;
