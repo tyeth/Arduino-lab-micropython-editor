@@ -36,6 +36,14 @@ function DiskFileList(state, emit) {
     }
   }
 
+  const newFolderItem = html`
+    <div class="item">
+      <img class="icon" src="media/folder.svg" />
+      <div class="text">
+        <input type="text" onkeydown=${onKeyEvent} onblur=${(e) => emit('finish-creating', e.target.value)}/>
+      </div>
+    </div>
+  `
   const newFileItem = html`
     <div class="item">
       <img class="icon" src="media/file.svg" />
@@ -50,6 +58,7 @@ function DiskFileList(state, emit) {
       <div class="list">
         <div class="item" onclick=${() => emit('navigate-disk-parent')}>..</div>
         ${state.creatingFile == 'disk' ? newFileItem : null}
+        ${state.creatingFolder == 'disk' ? newFolderItem : null}
         ${state.diskFiles.map(DiskFileItem)}
       </div>
     </div>
@@ -105,6 +114,15 @@ function BoardFileList(state, emit) {
     }
   }
 
+  const newFolderItem = html`
+    <div class="item">
+      <img class="icon" src="media/folder.svg" />
+      <div class="text">
+        <input type="text" onkeydown=${onKeyEvent} onblur=${(e) => emit('finish-creating', e.target.value)}/>
+      </div>
+    </div>
+  `
+
   const newFileItem = html`
     <div class="item">
       <img class="icon" src="media/file.svg" />
@@ -119,6 +137,7 @@ function BoardFileList(state, emit) {
       <div class="list">
         <div class="item" onclick=${() => emit('navigate-board-parent')}>..</div>
         ${state.creatingFile == 'serial' ? newFileItem : null}
+        ${state.creatingFolder == 'serial' ? newFolderItem : null}
         ${state.boardFiles.map(BoardFileItem)}
       </div>
     </div>

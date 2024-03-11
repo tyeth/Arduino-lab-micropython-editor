@@ -75,6 +75,12 @@ ipcMain.handle('save-file', (event, filePath, content) => {
   return true
 })
 
+ipcMain.handle('create-folder', (event, filePath) => {
+  console.log('ipcMain', 'create-folder', filePath)
+  fs.mkdirSync(filePath)
+  return true
+})
+
 ipcMain.handle('update-folder', (event, folder) => {
   console.log('ipcMain', 'update-folder', folder)
   let files = fs.readdirSync(path.resolve(folder))

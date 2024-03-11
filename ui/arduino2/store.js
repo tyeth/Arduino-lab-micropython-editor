@@ -21,6 +21,7 @@ async function store(state, emitter) {
   state.selectedFiles = []
   state.editingFile = null
   state.creatingFile = null
+  state.creatingFolder = null
   state.renamingFile = null
 
   state.availablePorts = []
@@ -396,6 +397,12 @@ async function store(state, emitter) {
     state.isRemoving = false
     emitter.emit('render')
   })
+  emitter.on('create-folder', (device) => {
+    log('create-folder', device)
+    if (state.creatingFolder !== null) return
+    state.creatingFolder = device
+    emitter.emit('render')
+  })
   emitter.on('create-file', (device) => {
     log('create-file', device)
     if (state.creatingFile !== null) return
@@ -405,15 +412,36 @@ async function store(state, emitter) {
   emitter.on('rename-file', () => {})
   emitter.on('finish-renaming', () => {})
   emitter.on('finish-creating', async (value) => {
-    log('finish-creating', value)
-    if (!state.creatingFile) return
+    if (!state.creatingFile && !state.creatingFolder){
+      console.log('neither creating file nor folder')
+      return
+    } 
 
     if (!value) {
       state.creatingFile = null
+      state.creatingFolder = null
       emitter.emit('render')
       return
     }
 
+    if (state.isConnected && state.creatingFolder == 'serial') {
+      await serial.createFolder(
+        serial.getFullPath(
+          '/',
+          state.boardNavigationPath,
+          value
+        )
+      )
+    } else if (state.creatingFolder == 'disk') {
+      await disk.createFolder(
+        disk.getFullPath(
+          state.diskNavigationRoot,
+          state.diskNavigationPath,
+          value
+        )
+      )
+    }
+    
     if (state.isConnected && state.creatingFile == 'serial') {
       await serial.saveFileContent(
         serial.getFullPath(
@@ -433,6 +461,8 @@ async function store(state, emitter) {
         newFileContent
       )
     }
+    state.creatingFile = null
+    state.creatingFolder = null
 
     setTimeout(() => {
       state.creatingFile = null

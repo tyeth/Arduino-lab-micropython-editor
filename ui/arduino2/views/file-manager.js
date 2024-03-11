@@ -20,6 +20,9 @@ function FileManagerView(state, emit) {
               <button disabled=${!state.isConnected} onclick=${() => emit('create-file', 'serial')}>
                 <img class="icon" src="media/new-file.svg" />
               </button>
+              <button disabled=${!state.isConnected} onclick=${() => emit('create-folder', 'serial')}>
+                <img class="icon" src="media/new-folder.svg" />
+              </button>
             </div>
             ${BoardFileList(state, emit)}
           </div>
@@ -30,8 +33,11 @@ function FileManagerView(state, emit) {
               <div class="text" onclick=${() => emit('select-disk-navigation-root')}>
                 <span>${diskFullPath}</span>
               </div>
-                <button onclick=${() => emit('create-file', 'disk')}>
+              <button onclick=${() => emit('create-file', 'disk')}>
                 <img class="icon" src="media/new-file.svg" />
+              </button>
+              <button onclick=${() => emit('create-folder', 'disk')}>
+                <img class="icon" src="media/new-folder.svg" />
               </button>
             </div>
             ${DiskFileList(state, emit)}

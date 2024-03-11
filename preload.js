@@ -103,6 +103,9 @@ const Disk = {
   saveFileContent: async (filePath, content) => {
     return ipcRenderer.invoke('save-file', filePath, content)
   },
+  createFolder: async (filePath) => {
+    return ipcRenderer.invoke('create-folder', filePath)
+  },
   renameFile: async (oldName, newName) => {
     return ipcRenderer.invoke('rename-file', oldName, newName)
   },
