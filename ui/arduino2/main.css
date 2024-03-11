@@ -505,8 +505,8 @@ button.small .icon {
 }
 
 .file-list .item .checkbox {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
 }
 .file-list .item .icon {

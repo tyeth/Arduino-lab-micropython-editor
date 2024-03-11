@@ -17,11 +17,13 @@ function DiskFileList(state, emit) {
         <div class="item">
         ${Checkbox({
           checked: isChecked,
-          icon: '',
+          icon: 'folder.svg',
           onClick: () => emit('toggle-file-selection', item, 'disk')
         })}
-          <img class="icon" src="media/folder.svg" onclick=${() => emit('navigate-disk-folder', item.fileName)}/>
           <div class="text" onclick=${() => emit('navigate-disk-folder', item.fileName)}>${item.fileName}</div>
+          <div class="options" onclick=${() => console.log('options', item)}>
+            <img src="media/falafel.svg" />
+          </div>
         </div>
       `
     } else {
@@ -30,10 +32,10 @@ function DiskFileList(state, emit) {
         <div class="item">
           ${Checkbox({
             checked: isChecked,
-            icon: '',
+            icon: 'file.svg',
             onClick: () => emit('toggle-file-selection', item, 'disk')
           })}
-          <div class='icon'><img src="media/file.svg" /></div>
+          
           <div class="text">${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
@@ -102,11 +104,13 @@ function BoardFileList(state, emit) {
         <div class="item">
         ${Checkbox({
           checked: isChecked,
-          icon: '',
+          icon: 'folder.svg',
           onClick: () => emit('toggle-file-selection', item, 'board')
         })}
-          <img class="icon" src="media/folder.svg" onclick=${() => emit('navigate-board-folder', item.fileName)} />
           <div class="text" onclick=${() => emit('navigate-board-folder', item.fileName)}>${item.fileName}</div>
+          <div class="options" onclick=${() => console.log('options', item)}>
+            <img src="media/falafel.svg" />
+          </div>
         </div>
       `
     } else {
@@ -115,11 +119,10 @@ function BoardFileList(state, emit) {
         <div class="item">
           ${Checkbox({
             checked: isChecked,
-            icon: '',
+            icon: 'file.svg',
             onClick: () => emit('toggle-file-selection', item, 'board')
           })}
-          <div class='icon'><img src="media/file.svg" /></div>
-          <div class="text">${item.fileName}</div>
+          <div class="text" onclick=${() => emit('navigate-board-folder', item.fileName)}>${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
           </div>

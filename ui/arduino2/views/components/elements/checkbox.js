@@ -8,6 +8,7 @@ function Checkbox(args) {
     <div class="checkbox ${checked ? 'checked' : 'unchecked'}" onclick=${onClick}>
       <img class="icon off" src="media/unchecked.svg" />
       <img class="icon on" src="media/checked.svg" />
+      <img class="icon" src="media/${icon}" />
     </div>
   `
 }
