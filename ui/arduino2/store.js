@@ -506,12 +506,13 @@ async function store(state, emitter) {
 
   emitter.on('toggle-file-selection', (file, source, event) => {
     console.log(event, file, source)
-    if (!event.ctrlKey && !event.metaKey){
-      state.selectedFiles = deselectFilesFromSource(source, state.selectedFiles)
-    }
     const isSelected = state.selectedFiles.find((f) => {
       return f.fileName === file.fileName && f.source === source
     })
+    if (!event.ctrlKey && !event.metaKey) {
+      state.selectedFiles = deselectFilesFromSource(source, state.selectedFiles)
+    }
+    
     if (isSelected) {
       state.selectedFiles = state.selectedFiles.filter((f) => {
         return !(f.fileName === file.fileName && f.source === source)
@@ -651,6 +652,10 @@ async function store(state, emitter) {
 
     for (let i in state.selectedFiles) {
       const file = state.selectedFiles[i]
+      if (file.type === 'folder') {
+        const confirmAction = alert(`Folder transfer not yet available`)
+        continue
+      }
       const confirmAction = confirm(`Copying ${file.fileName} might overwrite an existing file, are you sure you want to proceed?`, 'Cancel', 'Yes')
       if (!confirmAction) {
         continue
