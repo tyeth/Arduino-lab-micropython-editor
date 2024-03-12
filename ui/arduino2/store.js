@@ -506,7 +506,9 @@ async function store(state, emitter) {
 
   emitter.on('toggle-file-selection', (file, source, event) => {
     console.log(event, file, source)
-    if (! event.ctrlKey && ! event.metaKey) return
+    if (!event.ctrlKey && !event.metaKey){
+      state.selectedFiles = deselectFilesFromSource(source, state.selectedFiles)
+    }
     const isSelected = state.selectedFiles.find((f) => {
       return f.fileName === file.fileName && f.source === source
     })
@@ -515,6 +517,7 @@ async function store(state, emitter) {
         return !(f.fileName === file.fileName && f.source === source)
       })
     } else {
+
       state.selectedFiles.push({
         fileName: file.fileName,
         type: file.type,
