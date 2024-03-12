@@ -11,16 +11,18 @@ function DiskFileList(state, emit) {
   }
 
   function DiskFileItem(item, i) {
+
     if (item.type === 'folder') {
       const isChecked = state.selectedFiles.find(f => f.fileName === item.fileName && f.source === 'disk')
       return html`
-        <div class="item">
-        ${Checkbox({
-          checked: isChecked,
-          icon: 'folder.svg',
-          onClick: () => emit('toggle-file-selection', item, 'disk')
-        })}
-          <div class="text" onclick=${() => emit('navigate-disk-folder', item.fileName)}>${item.fileName}</div>
+        <div class="item ${isChecked ? 'checked' : ''}" onclick=${(e) => emit('toggle-file-selection', item, 'disk', e)} ondblclick=${() => emit('navigate-disk-folder', item.fileName)}>
+          ${Checkbox({
+            checked: isChecked,
+            type: 'folder',
+            icon: 'folder.svg',
+            iconChecked: 'folder-checked.svg'
+          })}
+          <div class="text">${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
           </div>
@@ -29,15 +31,16 @@ function DiskFileList(state, emit) {
     } else {
       const isChecked = state.selectedFiles.find(f => f.fileName === item.fileName && f.source === 'disk')
       return html`
-        <div class="item">
+        <div class="item ${isChecked ? 'checked' : ''}" onclick=${(e) => emit('toggle-file-selection', item, 'disk', e)} ondblclick=${() => emit('open-single-file', item, 'disk')}>
           ${Checkbox({
             checked: isChecked,
+            type: 'file',
             icon: 'file.svg',
-            onClick: () => emit('toggle-file-selection', item, 'disk')
+            iconChecked: 'file-checked.svg'
           })}
           
           <div class="text">${item.fileName}</div>
-          <div class="options" onclick=${() => console.log('options', item)}>
+          <div class="options">
             <img src="media/falafel.svg" />
           </div>
         </div>
@@ -101,13 +104,14 @@ function BoardFileList(state, emit) {
     if (item.type === 'folder') {
       const isChecked = state.selectedFiles.find(f => f.fileName === item.fileName && f.source === 'board')
       return html`
-        <div class="item">
-        ${Checkbox({
-          checked: isChecked,
-          icon: 'folder.svg',
-          onClick: () => emit('toggle-file-selection', item, 'board')
-        })}
-          <div class="text" onclick=${() => emit('navigate-board-folder', item.fileName)}>${item.fileName}</div>
+        <div class="item ${isChecked ? 'checked' : ''}" onclick=${(e) => emit('toggle-file-selection', item, 'board', e)} ondblclick=${() => emit('navigate-board-folder', item.fileName)}>
+          ${Checkbox({
+            checked: isChecked,
+            type: 'folder',
+            icon: 'folder.svg',
+            iconChecked: 'folder-checked.svg'
+          })}
+          <div class="text">${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
           </div>
@@ -116,13 +120,14 @@ function BoardFileList(state, emit) {
     } else {
       const isChecked = state.selectedFiles.find(f => f.fileName === item.fileName && f.source === 'board')
       return html`
-        <div class="item">
+        <div class="item ${isChecked ? 'checked' : ''}" onclick=${(e) => emit('toggle-file-selection', item, 'board', e)} ondblclick=${() => emit('open-single-file', item, 'board')}>
           ${Checkbox({
             checked: isChecked,
+            type: 'file',
             icon: 'file.svg',
-            onClick: () => emit('toggle-file-selection', item, 'board')
+            iconChecked: 'file-checked.svg'
           })}
-          <div class="text" onclick=${() => emit('navigate-board-folder', item.fileName)}>${item.fileName}</div>
+          <div class="text">${item.fileName}</div>
           <div class="options" onclick=${() => console.log('options', item)}>
             <img src="media/falafel.svg" />
           </div>

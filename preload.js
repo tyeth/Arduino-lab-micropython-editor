@@ -53,6 +53,10 @@ const Serial = {
   removeFile: async (file) => {
     return board.fs_rm(file)
   },
+  removeFolder: async (folder) => {
+    console.log('Board > removeFolder >', folder)
+    return board.fs_rmdir(folder)
+  },
   saveFileContent: async (filename, content, dataConsumer) => {
     return board.fs_save(content || ' ', filename, dataConsumer)
   },
@@ -91,6 +95,7 @@ const Disk = {
     return ipcRenderer.invoke('list-files', folder)
   },
   ilistFiles: async (folder) => {
+    console.log('dentro ilistFiles', folder)
     return ipcRenderer.invoke('ilist-files', folder)
   },
   loadFile: async (filePath) => {
@@ -98,7 +103,12 @@ const Disk = {
     return new TextDecoder().decode(content)
   },
   removeFile: async (filePath) => {
+    console.log('Disk > removeFile >', filePath)
     return ipcRenderer.invoke('remove-file', filePath)
+  },
+  removeFolder: async (folderPath) => {
+    console.log('Disk > removeFolder >', folderPath)
+    return ipcRenderer.invoke('remove-folder', folderPath)
   },
   saveFileContent: async (filePath, content) => {
     return ipcRenderer.invoke('save-file', filePath, content)

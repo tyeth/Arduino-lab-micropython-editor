@@ -492,8 +492,9 @@ button.small .icon {
   align-self: stretch;
 }
 
-.file-list .item:hover {
+.file-list .item:hover, .file-list .item.checked{
   background: #FFF;
+  cursor: pointer;
 }
 
 .file-list .item .options {
@@ -530,24 +531,50 @@ button.small .icon {
   line-height: normal;
 }
 
-.file-list .item .checkbox .icon.off,
+/* .file-list .item .checkbox .icon.off,
 .file-list .item .checkbox .icon.on {
   display: none;
-}
+} */
 
-.file-list .item:hover .checkbox.unchecked .icon {
+/* .file-list .item:hover .checkbox.unchecked .icon {
   display: none;
 }
 .file-list .item:hover .checkbox.unchecked .icon.off {
   display: block;
 }
-
-.file-list .item .checkbox.checked .icon {
+.file-list .item:hover .checkbox.unchecked .icon.on {
   display: none;
 }
-.file-list .item .checkbox.checked .icon.on  {
+
+.file-list .item:hover .checkbox.checked .icon {
+  display: none;
+}
+.file-list .item:hover .checkbox.checked .icon.off {
+  display: none;
+}
+.file-list .item:hover .checkbox.checked .icon.on {
   display: block;
 }
+
+.file-list .item .checkbox.checked .icon {
+  display: block;
+}
+.file-list .item .checkbox.checked .icon.on  {
+  display: none;
+}
+.file-list .item .checkbox.checked .icon.off  {
+  display: none;
+}
+
+.file-list .item .checkbox.unchecked .icon {
+  display: block;
+}
+.file-list .item .checkbox.unchecked .icon.on  {
+  display: none;
+}
+.file-list .item .checkbox.unchecked .icon.off  {
+  display: none;
+} */
 
 .file-list .item input {
   border: none;

@@ -8,7 +8,7 @@ function FileActions(state, emit) {
     ${Button({
       icon: 'edit.svg',
       size: 'small',
-      disabled: state.selectedFiles.length === 0,
+      disabled: selectedFiles.length === 0,
       onClick: () => emit('open-selected-files')
     })}
     ${Button({
@@ -28,7 +28,7 @@ function FileActions(state, emit) {
     ${Button({
       icon: 'delete.svg',
       size: 'small',
-      disabled: state.selectedFiles.length === 0,
+      disabled: selectedFiles.length === 0,
       onClick: () => emit('remove-files')
     })}
   </div>

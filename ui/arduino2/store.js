@@ -19,6 +19,8 @@ async function store(state, emitter) {
   state.boardFiles = []
   state.openFiles = []
   state.selectedFiles = []
+  state.selectedBoardFiles = []
+  state.selectedDiskFiles = []
   state.editingFile = null
   state.creatingFile = null
   state.creatingFolder = null
@@ -63,7 +65,11 @@ async function store(state, emitter) {
   })
   emitter.on('change-view', (view) => {
     state.view = view
+
     if (state.view === 'file-manager') {
+      state.selectedFiles = []
+      state.selectedBoardFiles = []
+      state.selectedDiskFiles = []
       emitter.emit('refresh-files')
     }
     emitter.emit('render')
@@ -363,11 +369,11 @@ async function store(state, emitter) {
     })
     emitter.emit('render')
   })
-  emitter.on('remove-folder', async () => {
-    state.isRemoving = true
-    emitter.emit('render')
-    
-  })
+  // emitter.on('remove-folder', async () => {
+  //   state.isRemoving = true
+  //   console.log('store > remove-folder')
+  //   emitter.emit('render')
+  // })
   emitter.on('remove-files', async () => {
     state.isRemoving = true
     emitter.emit('render')
@@ -379,21 +385,41 @@ async function store(state, emitter) {
         continue
       }
       if (file.source === 'board') {
-        await serial.removeFile(
-          serial.getFullPath(
-            '/',
-            state.boardNavigationPath,
-            file.fileName
+        if (file.type === 'folder') {
+          await serial.removeFolder(
+            serial.getFullPath(
+              '/',
+              state.boardNavigationPath,
+              file.fileName
+            )
           )
-        )
+        } else {
+          await serial.removeFile(
+            serial.getFullPath(
+              '/',
+              state.boardNavigationPath,
+              file.fileName
+            )
+          )
+        }
       } else {
-        await disk.removeFile(
-          disk.getFullPath(
-            state.diskNavigationRoot,
-            state.diskNavigationPath,
-            file.fileName
+        if (file.type === 'folder') {
+          await disk.removeFolder(
+            disk.getFullPath(
+              state.diskNavigationRoot,
+              state.diskNavigationPath,
+              file.fileName
+            )
           )
-        )
+        } else {
+          await disk.removeFile(
+            disk.getFullPath(
+              state.diskNavigationRoot,
+              state.diskNavigationPath,
+              file.fileName
+            )
+          )
+        }
       }
     }
 
@@ -478,7 +504,9 @@ async function store(state, emitter) {
   emitter.on('open-file-options', () => {})
   emitter.on('close-file-options', () => {})
 
-  emitter.on('toggle-file-selection', (file, source) => {
+  emitter.on('toggle-file-selection', (file, source, event) => {
+    console.log(event, file, source)
+    if (! event.ctrlKey && ! event.metaKey) return
     const isSelected = state.selectedFiles.find((f) => {
       return f.fileName === file.fileName && f.source === source
     })
@@ -489,14 +517,28 @@ async function store(state, emitter) {
     } else {
       state.selectedFiles.push({
         fileName: file.fileName,
+        type: file.type,
         source: source,
         parentFolder: file.parentFolder
       })
     }
+    state.selectedDiskFiles = state.selectedFiles.filter((f) => f.source === 'disk')
+    state.selectedBoardFiles = state.selectedFiles.filter((f) => f.source === 'board')
     emitter.emit('render')
   })
+  emitter.on('open-single-file', async(file, source) => {
+    state.selectedFiles = []
+    state.selectedFiles.push({
+      fileName: file.fileName,
+      type: file.type,
+      source: source,
+      parentFolder: file.parentFolder
+    })
+    emitter.emit('open-selected-files')
+    console.log('open-single-file', file)
+  })
   emitter.on('open-selected-files', async () => {
-    log('open-selected-files')
+    console.log('open-selected-files')
     let files = []
     for (let i in state.selectedFiles) {
       let selectedFile = state.selectedFiles[i]
@@ -569,6 +611,10 @@ async function store(state, emitter) {
 
     for (let i in state.selectedFiles) {
       const file = state.selectedFiles[i]
+      if (file.type === 'folder') {
+        const confirmAction = alert(`Folder transfer not yet available`)
+        continue
+      }
       const confirmAction = confirm(`Copying ${file.fileName} might overwrite an existing file at destination.\nAre you sure you want to proceed?`, 'Cancel', 'Yes')
       if (!confirmAction) {
         continue
@@ -637,6 +683,8 @@ async function store(state, emitter) {
       state.boardNavigationPath,
       folder
     )
+    state.selectedBoardFiles = []
+    state.selectedFiles = deselectFilesFromSource('board', state.selectedFiles)
     emitter.emit('refresh-files')
     emitter.emit('render')
   })
@@ -646,6 +694,8 @@ async function store(state, emitter) {
       state.boardNavigationPath,
       '..'
     )
+    state.selectedBoardFiles = []
+    state.selectedFiles = deselectFilesFromSource('board', state.selectedFiles)
     emitter.emit('refresh-files')
     emitter.emit('render')
   })
@@ -656,6 +706,8 @@ async function store(state, emitter) {
       state.diskNavigationPath,
       folder
     )
+    state.selectedDiskFiles = []
+    state.selectedFiles = deselectFilesFromSource('disk', state.selectedFiles)
     emitter.emit('refresh-files')
     emitter.emit('render')
   })
@@ -665,6 +717,8 @@ async function store(state, emitter) {
       state.diskNavigationPath,
       '..'
     )
+    state.selectedDiskFiles = []
+    state.selectedFiles = deselectFilesFromSource('disk', state.selectedFiles)
     emitter.emit('refresh-files')
     emitter.emit('render')
   })
@@ -824,6 +878,12 @@ function canUpload({ isConnected, selectedFiles }) {
   return isConnected
       && selectedFiles.length > 0
       && selectedBoardFiles.length === 0
+}
+
+function deselectFilesFromSource(source, selectedFiles) {
+  console.log('deselectFilesFromSource', source, selectedFiles)
+  if (selectedFiles.length === 0) return []
+  return selectedFiles.filter((f) => f.source !== source)
 }
 
 function toggleFileSelection({ fileName, source, selectedFiles }) {

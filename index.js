@@ -23,6 +23,7 @@ function listFolder(folder) {
 }
 
 function getFolderTree(folder_path, result = []) {
+  console.log('get folder tree', folder_path, result)
   fs.readdirSync(folder_path).forEach((file) => {
   const fPath = path.resolve(folder_path, file)
   const fileStats = { file, path: fPath }
@@ -111,6 +112,7 @@ ipcMain.handle('update-folder', (event, folder) => {
 
 ipcMain.handle('remove-folder', (event, folder) => {
   const deleteList = getFolderTree(folder)
+  fs.rmdirSync(folder, { recursive: true, force: true})
   console.log('ipcMain', 'remove-folder', folder, deleteList)
 })
 
