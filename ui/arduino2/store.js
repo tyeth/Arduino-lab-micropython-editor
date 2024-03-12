@@ -7,6 +7,43 @@ const newFileContent = `# This program was created in Arduino Lab for MicroPytho
 
 print('Hello, MicroPython!')
 `
+const microPythonTreeDelete = `
+import os
+os.chdir('/')
+def is_directory(path):
+  return True if stat(path)[0] == 0x4000 else False
+  
+def file_tree_generator(folder_path, depth=0):
+  try:
+    os.listdir(folder_path)
+  except OSError as err:
+      print('path not existing')
+      return False
+  for itm in os.ilistdir(folder_path):
+    item_path = folder_path + '/' + itm[0]
+    item_path = item_path.replace('//', '/')
+    if is_directory(item_path):
+      yield from file_tree_generator(item_path, depth=depth + 1)
+    else:
+      yield depth, False, item_path
+  yield depth, True, folder_path
+
+def delete_fs_item(fs_path, is_folder = False):
+  print('deleting', 'folder:' if is_folder else 'file:', fs_path)
+  if is_folder:
+    os.rmdir(fs_path)
+  else:
+    os.remove(fs_path)
+
+def delete_folder(path = '.'):
+  for depth, is_folder, file_path in file_tree_generator(path):
+    if file_path in ('.', os.getcwd()):
+      print('cannot delete current folder')
+      continue
+    delete_fs_item(file_path, is_folder)
+    
+`
+
 
 async function store(state, emitter) {
   win.setWindowSize(720, 640)
@@ -386,13 +423,17 @@ async function store(state, emitter) {
       }
       if (file.source === 'board') {
         if (file.type === 'folder') {
-          await serial.removeFolder(
-            serial.getFullPath(
-              '/',
-              state.boardNavigationPath,
-              file.fileName
-            )
-          )
+          let command = microPythonTreeDelete
+          let folder_path = serial.getFullPath('/', state.boardNavigationPath, file.fileName)
+          command += `delete_folder('${folder_path}')`
+          await serial.run(command)
+          // await serial.removeFolder(
+          //   serial.getFullPath(
+          //     '/',
+          //     state.boardNavigationPath,
+          //     file.fileName
+          //   )
+          // )
         } else {
           await serial.removeFile(
             serial.getFullPath(
