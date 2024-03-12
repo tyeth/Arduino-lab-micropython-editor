@@ -363,6 +363,11 @@ async function store(state, emitter) {
     })
     emitter.emit('render')
   })
+  emitter.on('remove-folder', async () => {
+    state.isRemoving = true
+    emitter.emit('render')
+    
+  })
   emitter.on('remove-files', async () => {
     state.isRemoving = true
     emitter.emit('render')
